@@ -1,61 +1,57 @@
 <template>
-  <input type="password" id="password" placeholder="Enter password" />
-  <button onclick="checkPassword()">Submit</button>
-  <div id="content" style="display: none">
-    <div class="homeview_container">
-      <div class="center_container">
-        <div class="box">
-          <div class="func_desc">
-            <i class="el-icon-microphone"></i>
-            Speech Recognition Results
-          </div>
-          <div v-if="!currentText" style="color: gray">No Content</div>
-          <div class="asr_content">{{ currentText }}</div>
-          <div class="single_part_bottom_bar">
-            <el-button
-              icon="el-icon-delete"
-              :disabled="!currentText"
-              @click="clearASRContent"
-            >
-              Clear Text
-            </el-button>
-          </div>
+  <div class="homeview_container">
+    <div class="center_container">
+      <div class="box">
+        <div class="func_desc">
+          <i class="el-icon-microphone"></i>
+          Speech Recognition Results
         </div>
-        <div class="box" style="border-left: none">
-          <div class="func_desc">
-            <i class="el-icon-s-custom"></i>
-            GPT Answer
-          </div>
-          <LoadingIcon v-show="show_ai_thinking_effect" />
-          <div class="ai_result_content">{{ ai_result }}</div>
-          <div class="single_part_bottom_bar">
-            <el-button
-              icon="el-icon-thumb"
-              @click="askCurrentText"
-              :disabled="!isGetGPTAnswerAvailable"
-            >
-              Ask GPT
-            </el-button>
-          </div>
+        <div v-if="!currentText" style="color: gray">No Content</div>
+        <div class="asr_content">{{ currentText }}</div>
+        <div class="single_part_bottom_bar">
+          <el-button
+            icon="el-icon-delete"
+            :disabled="!currentText"
+            @click="clearASRContent"
+          >
+            Clear Text
+          </el-button>
         </div>
       </div>
-      <div class="title_function_bar">
-        <el-button
-          type="success"
-          @click="startCopilot"
-          v-show="state === 'end'"
-          :loading="copilot_starting"
-          :disabled="copilot_starting"
-          >Start Copilot
-        </el-button>
-        <el-button
-          :loading="copilot_stopping"
-          @click="userStopCopilot"
-          v-show="state === 'ing'"
-          >Stop Copilot
-        </el-button>
-        <MyTimer ref="MyTimer" />
+      <div class="box" style="border-left: none">
+        <div class="func_desc">
+          <i class="el-icon-s-custom"></i>
+          GPT Answer
+        </div>
+        <LoadingIcon v-show="show_ai_thinking_effect" />
+        <div class="ai_result_content">{{ ai_result }}</div>
+        <div class="single_part_bottom_bar">
+          <el-button
+            icon="el-icon-thumb"
+            @click="askCurrentText"
+            :disabled="!isGetGPTAnswerAvailable"
+          >
+            Ask GPT
+          </el-button>
+        </div>
       </div>
+    </div>
+    <div class="title_function_bar">
+      <el-button
+        type="success"
+        @click="startCopilot"
+        v-show="state === 'end'"
+        :loading="copilot_starting"
+        :disabled="copilot_starting"
+        >Start Copilot
+      </el-button>
+      <el-button
+        :loading="copilot_stopping"
+        @click="userStopCopilot"
+        v-show="state === 'ing'"
+        >Stop Copilot
+      </el-button>
+      <MyTimer ref="MyTimer" />
     </div>
   </div>
 </template>
@@ -67,29 +63,6 @@ import MyTimer from "@/components/MyTimer.vue";
 import * as SpeechSDK from "microsoft-cognitiveservices-speech-sdk";
 import OpenAI from "openai";
 import config_util from "../utils/config_util";
-
-function checkPassword() {
-  var password = document.getElementById("password").value;
-  if (sha256(password) === "1a9512b68107e4e2f2eb0acb60b50e7bb0a41dd0") {
-    document.getElementById("login-form").style.display = "none";
-    document.getElementById("content").style.display = "block";
-  } else {
-    alert("Incorrect password");
-  }
-}
-
-function sha256(plain) {
-  const crypto = window.crypto || window.msCrypto;
-  const encoder = new TextEncoder();
-  const data = encoder.encode(plain);
-  return crypto.subtle.digest("SHA-256", data).then((hash) => {
-    return Array.from(new Uint8Array(hash))
-      .map((byte) => {
-        return ("0" + (byte & 0xff).toString(16)).slice(-2);
-      })
-      .join("");
-  });
-}
 
 export default {
   name: "HomeView",
